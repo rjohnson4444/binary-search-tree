@@ -1,58 +1,163 @@
 class NullNode
-  DEFAULT = NullNode.new  # => #<NullNode:0x007f8af2084e98>
-end                       # => #<NullNode:0x007f8af2084e98>
+  DEFAULT = NullNode.new
+end
 
 class Node
-  attr_accessor :data, :right, :left                                     # => nil
+  attr_accessor :data, :right, :left, :node_count
   def initialize(data, right=NullNode::DEFAULT, left=NullNode::DEFAULT)
-    self.data = data                                                     # => "d", "b", "f", "e", "g", "c"
-    self.right = right                                                   # => #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>
-    self.left = left                                                     # => #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>, #<NullNode:0x007f8af2084e98>
-  end                                                                    # => :initialize
-end                                                                      # => :initialize
+    self.data = data
+    self.right = right
+    self.left = left
+  end
 
-class Bst < Node                          # => Node
-  attr_accessor :head                     # => nil
-  def initialize(head=NullNode::DEFAULT)
-    self.head = head                      # => #<NullNode:0x007f8af2084e98>
-  end                                     # => :initialize
+  def <=>(other_node)
+    self.data <=> other_node.data
+  end
+end
+
+class Bst < Node
+  attr_accessor :head, :depth
+  def initialize(head = NullNode::DEFAULT)
+    self.head = head
+    self.node_count = 0
+    self.depth = 1
+  end
+
+  def tree_depth
+    self.depth
+  end
 
   def insert(value)
-    self.head = insert_node(self.head, value)  # => #<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, #<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, #<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, #<Node:0x007f8af207f240 @data="d", ...
-  end                                          # => :insert
+    self.head = insert_node(self.head, value)
+  end
 
   def insert_node(current_node, data)
-    if current_node == NullNode::DEFAULT                          # => true, false, true, false, true, false, false, true, false, false, true, false, false, true
-      current_node = Node.new(data)                               # => #<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af2066718 @data="g", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af114e050 @data="c", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>
-    elsif data < current_node.data                                # => true, false, false, true, false, false, true, false
-      current_node.left = insert_node(current_node.left, data)    # => #<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af207d300 @data="b", @right=#<Node:0x007f8af114e050 @data="c", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<NullNode:0x007f8af2084e98>>
-    elsif data > current_node.data                                # => true, true, true, true, true
-      current_node.right = insert_node(current_node.right, data)  # => #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, #<Node:0x007f8af2066718 @data="g", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af2076d20 @data="f", @right=#<Node:0x007f8af2066718 @data="g", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, #<Node:0x007f8af114e050 @data="c", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>
-    elsif data == current_node.data
-      current_node.data = data
-    end                                                           # => #<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullN...
-    current_node                                                  # => #<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, #<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, #<Node:0x007f8af2076d20 @data="f", ...
-  end                                                             # => :insert_node
-end                                                               # => :insert_node
+    if current_node == NullNode::DEFAULT
+      self.node_count += 1
+      self.depth += 1
+      current_node = Node.new(data)
+    elsif data < current_node.data
+      current_node.left = insert_node(current_node.left, data)
+    elsif data > current_node.data
+      current_node.right = insert_node(current_node.right, data)
+    end
+    current_node
+  end
 
+  def maximum
+    sorted = []
+    maximum_value(sorted, self.head)
+    sorted[0]
+  end
 
+  def maximum_value(list, node)
+    null = NullNode::DEFAULT
+    unless node == null
+      maximum_value(list, node.right)
+      list << node.data
+      list
+    end
+  end
 
+  def minimum
+    sorted = []
+    minimum_value(sorted, self.head)
+    sorted[0]
+  end
 
-bst = Bst.new    # => #<Bst:0x007f8af207f998 @head=#<NullNode:0x007f8af2084e98>>
-bst.insert("d")  # => #<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>
-bst              # => #<Bst:0x007f8af207f998 @head=#<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>
-bst.insert("b")  # => #<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>
-bst              # => #<Bst:0x007f8af207f998 @head=#<Node:0x007f8af207f240 @data="d", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>>
-bst.insert("f")  # => #<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>
-bst.head.right   # => #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>
-bst.head.left    # => #<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>
-bst              # => #<Bst:0x007f8af207f998 @head=#<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>>
-bst.insert("e")  # => #<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>
-bst.head.right   # => #<Node:0x007f8af2076d20 @data="f", @right=#<NullNode:0x007f8af2084e98>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>
-bst.head.left    # => #<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>
-bst.insert("g")  # => #<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<Node:0x007f8af2066718 @data="g", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>
-bst              # => #<Bst:0x007f8af207f998 @head=#<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<Node:0x007f8af2066718 @data="g", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>>
-bst.insert("c")  # => #<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<Node:0x007f8af2066718 @data="g", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<Node:0x007f8af114e050 @data="c", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<NullNode:0x007f8af2084e98>>>
-bst.head.right   # => #<Node:0x007f8af2076d20 @data="f", @right=#<Node:0x007f8af2066718 @data="g", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>
-bst.head.left    # => #<Node:0x007f8af207d300 @data="b", @right=#<Node:0x007f8af114e050 @data="c", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<NullNode:0x007f8af2084e98>>
-bst              # => #<Bst:0x007f8af207f998 @head=#<Node:0x007f8af207f240 @data="d", @right=#<Node:0x007f8af2076d20 @data="f", @right=#<Node:0x007f8af2066718 @data="g", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<Node:0x007f8af206f688 @data="e", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>>, @left=#<Node:0x007f8af207d300 @data="b", @right=#<Node:0x007f8af114e050 @data="c", @right=#<NullNode:0x007f8af2084e98>, @left=#<NullNode:0x007f8af2084e98>>, @left=#<NullNode:0x007f8af2084e98>>>>
+  def minimum_value(list, node)
+    null = NullNode::DEFAULT
+    unless node == null
+      minimum_value(list, node.left)
+      list << node.data
+      list
+    end
+  end
+
+  def sort
+    sorted = []
+    sorted_values(sorted, self.head)
+    sorted
+  end
+
+  def sorted_values(list, node)
+    null = NullNode::DEFAULT
+    unless node == null
+      sorted_values(list, node.left)
+      list << node.data
+      sorted_values(list, node.right)
+    end
+  end
+
+  def include?(data)
+    values = []
+    include_values?(values, self.head)
+    values.each do |value|
+      if value == data
+        return true
+      else
+        next
+      end
+    end
+    false
+  end
+
+  def include_values?(list, node)
+    null = NullNode::DEFAULT
+    unless node == null
+      include_values?(list, node.left)
+      list << node.data
+      include_values?(list, node.right)
+    end
+  end
+
+  def delete(value)
+    self.head = delete_node(self.head, Node.new(value))
+  end
+
+  # figure out how to avoid comparing a NullNode
+  def delete_node(current_node, node)
+    if current_node.data == node.data
+      current_node = remove(current_node)
+    elsif node.data < current_node.data
+      current_node.left = delete_node(current_node.left, node)
+    else
+      current_node.right = delete_node(current_node.right, node)
+    end
+    return current_node
+  end
+
+  def remove(node)
+    null = NullNode::DEFAULT
+    if node.left == null && node.right == null
+      self.depth -= 1
+      node = null
+    elsif node.left != null && node.right == null
+      node.left = null
+    elsif node.right == null && node.right != null
+      node.right = null
+    else
+      node = replace_parent_node(node)
+    end
+  end
+
+  def replace_parent_node(node)
+    node.data = successor_data(node.right)
+    node.right = update_node(node.right)
+    node
+  end
+
+  def successor_data(node)
+    unless node.left == NullNode::DEFAULT
+      successor_data(node.left)
+    end
+    node.data
+  end
+
+  def update_node(node)
+    unless node.left = NullNode::DEFAULT
+      node.left = update_node(node)
+    end
+    node.right
+  end
+end
