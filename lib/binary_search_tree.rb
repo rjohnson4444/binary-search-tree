@@ -20,7 +20,7 @@ class Bst < Node
   def initialize(head = NullNode::DEFAULT)
     self.head = head
     self.node_count = 0
-    self.depth = 1
+    self.depth = 0
   end
 
   def tree_depth

@@ -153,17 +153,6 @@ class BinarySearchTreeTest < Minitest::Test
       assert_equal 2, bst.tree_depth
     end
 
-    def test_counts_depth_of_tree_for_3_or_more_nodes
-      bst = Bst.new
-      bst.insert("d")
-      bst.insert("b")
-      bst.insert("c")
-      bst.insert("f")
-      bst.insert("a")
-      bst.insert("e")
-      assert_equal 3, bst.tree_depth
-    end
-
     def test_counts_number_of_nodes_in_the_tree_with_2_values
       bst = Bst.new
       bst.insert("d")
